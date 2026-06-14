@@ -1,0 +1,7 @@
+# Local convenience aliases. CI is the authoritative gate;
+# these only make the pre-commit one-liner shorter:
+#   cargo fmt --check && cargo lint && cargo t && cargo docs
+[alias]
+lint = "clippy --all-targets --all-features"
+t = "test --all-features"
+docs = "doc --all-features --no-deps"

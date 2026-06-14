@@ -1,0 +1,32 @@
+version: 2
+
+updates:
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    groups:
+      time-stack:
+        patterns:
+          - time
+      serde-stack:
+        patterns:
+          - serde
+          - serde_json
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "ci"
+    ignore:
+      # `dtolnay/rust-toolchain` uses Rust version strings as refs
+      # (e.g. `@1.88` means "install Rust 1.88", not "action v1.88").
+      # Dependabot misreads these as semver action bumps; ignore them.
+      - dependency-name: "dtolnay/rust-toolchain"
