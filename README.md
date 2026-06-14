@@ -3,6 +3,7 @@
 [![crates.io](https://img.shields.io/crates/v/safari-binarycookies.svg)](https://crates.io/crates/safari-binarycookies)
 [![docs.rs](https://img.shields.io/docsrs/safari-binarycookies)](https://docs.rs/safari-binarycookies)
 [![CI](https://github.com/moonD4rk/safari-binarycookies/actions/workflows/ci.yml/badge.svg)](https://github.com/moonD4rk/safari-binarycookies/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/moonD4rk/safari-binarycookies/branch/main/graph/badge.svg)](https://codecov.io/gh/moonD4rk/safari-binarycookies)
 [![MSRV](https://img.shields.io/badge/MSRV-1.88-blue)](https://blog.rust-lang.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/moonD4rk/safari-binarycookies#license)
 

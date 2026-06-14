@@ -76,7 +76,10 @@ jobs:
         with:
           tool: cargo-hack
       - uses: Swatinem/rust-cache@v2
-      - run: cargo hack check --feature-powerset --no-dev-deps --locked
+      # No --locked here: --no-dev-deps rewrites the manifest, which forces a
+      # lockfile prune that --locked would reject. Lock integrity is enforced by
+      # the other jobs (clippy, test, build, msrv, publish-dry-run).
+      - run: cargo hack check --feature-powerset --no-dev-deps
 
   msrv:
     name: MSRV (1.88)
