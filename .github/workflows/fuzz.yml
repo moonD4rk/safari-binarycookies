@@ -1,0 +1,55 @@
+# Coverage-guided fuzzing: never on PR CI — weekly schedule plus manual
+# dispatch only, so nightly breakage cannot block merges.
+# The stable seed-regression test in tests/hardening.rs is the per-PR backstop.
+name: fuzz
+
+on:
+  schedule:
+    - cron: "17 3 * * 1" # Mondays 03:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write # crash auto-issue below
+
+jobs:
+  fuzz:
+    name: cargo fuzz (decode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@nightly
+
+      - name: Install cargo-fuzz
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-fuzz
+
+      - name: Fuzz decode target
+        run: cargo +nightly fuzz run decode -- -max_total_time=300
+
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-artifacts
+          path: fuzz/artifacts/
+          if-no-files-found: ignore
+
+      - name: Open issue for crash
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "fuzz: decode target failed in scheduled run $GITHUB_RUN_ID" \
+            --body "The scheduled fuzz run failed: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
+          Crash artifacts (if any) are attached to the run as \`fuzz-artifacts\`.
+          To triage: minimize with \`cargo fuzz tmin\`, add the seed
+          to \`fuzz/corpus/decode/\` and a regression test to \`tests/hardening.rs\`."

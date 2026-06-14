@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "checksum_hex": "0000163307172005",
+  "pages": [
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [
+        28,
+        121,
+        220,
+        311
+      ],
+      "cookies": [
+        {
+          "flags_bits": 4,
+          "secure": false,
+          "http_only": true,
+          "domain": "urlecho.appspot.com",
+          "name": "httpOnly",
+          "path": "/",
+          "value": "value",
+          "comment": null,
+          "expires_unix": 1439907047,
+          "creation_unix": 1439820647
+        },
+        {
+          "flags_bits": 5,
+          "secure": true,
+          "http_only": true,
+          "domain": "urlecho.appspot.com",
+          "name": "httpOnlySecure",
+          "path": "/",
+          "value": "value",
+          "comment": null,
+          "expires_unix": 1439907047,
+          "creation_unix": 1439820647
+        },
+        {
+          "flags_bits": 0,
+          "secure": false,
+          "http_only": false,
+          "domain": "urlecho.appspot.com",
+          "name": "normal",
+          "path": "/",
+          "value": "value",
+          "comment": null,
+          "expires_unix": 1439907047,
+          "creation_unix": 1439820647
+        },
+        {
+          "flags_bits": 1,
+          "secure": true,
+          "http_only": false,
+          "domain": "urlecho.appspot.com",
+          "name": "secure",
+          "path": "/",
+          "value": "value",
+          "comment": null,
+          "expires_unix": 1439907047,
+          "creation_unix": 1439820647
+        }
+      ]
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    },
+    {
+      "cookie_offsets": [],
+      "cookies": []
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Whitelist mode. The user's global ~/.gitignore_global ignores everything
+# (`*`) except directory traversal (`!*/`). This file re-allows the specific
+# patterns and paths we want tracked. Anything not on this list is silently
+# ignored — adding a new file type to the repo means updating this file.
+
+# --- File types allowed anywhere in the tree
+!*.rs
+!*.toml
+!*.md
+!*.yml
+!*.yaml
+!*.lock
+# Test fixtures (binary), under testdata/vectors/.
+!*.binarycookies
+
+# --- Vendored Go-generated test assets: vectors, golden JSON, unpacked fuzz
+# seeds (extensionless / .json / .bin — not covered by the type allows above)
+!/testdata/**
+
+# --- Fuzz corpus seeds (extensionless raw bytes); harness .rs/.toml/.lock are
+# covered by the type allows, artifacts/ and target/ stay ignored
+!/fuzz/corpus/**
+
+# --- Root files without a recognized extension (root-only via leading `/`)
+!/.editorconfig
+!/.gitignore
+!/LICENSE
+
+# --- Per-developer local notes (override the `!*.md` allow above)
+/CLAUDE.local.md
+AGENTS.md
+.agents/**
+
+# --- Claude harness runtime state (override `!*.lock` etc.); never tracked
+/.claude/
+
+# --- Build artifacts (override the extension allows above)
+target/
+
+# --- Local-only working notes; never committed (overrides the `!*.md` allow).
+/rfc2rust/

@@ -1,0 +1,7 @@
+# Project-level clippy thresholds. The lint enable/disable list lives in
+# `Cargo.toml` under `[lints.clippy]`; this file only pins numeric thresholds
+# for lints already active there. Values equal clippy's defaults, fixed
+# explicitly so the complexity budget is documented rather than implicit.
+cognitive-complexity-threshold = 25
+type-complexity-threshold = 250
+too-many-arguments-threshold = 7
