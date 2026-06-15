@@ -23,14 +23,19 @@ jobs:
           persist-credentials: false
 
       - uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-linux-gnu
 
       - name: Install cargo-fuzz
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-fuzz
 
+      # cargo-fuzz defaults --target to the triple its own binary was built
+      # for; the prebuilt is musl, whose static crt is incompatible with ASAN
+      # and whose std is absent. Pin gnu (the host) so the sanitizer build links.
       - name: Fuzz decode target
-        run: cargo +nightly fuzz run decode -- -max_total_time=300
+        run: cargo +nightly fuzz run decode --target x86_64-unknown-linux-gnu -- -max_total_time=300
 
       - name: Upload crash artifacts
         if: failure()
