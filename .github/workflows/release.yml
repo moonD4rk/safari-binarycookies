@@ -5,9 +5,10 @@ name: Release
 # Publishing, tags + creates the GitHub Release, then opens an auto-merging PR
 # back to main.
 #
-# Requires two repo secrets for the GitHub App used to push the release branch
-# and open/merge the PR (the default GITHUB_TOKEN cannot trigger CI on the PR it
-# opens): RELEASE_APP_ID, RELEASE_APP_PRIVATE_KEY.
+# Uses the shared release GitHub App to push the release branch and open/merge the
+# PR (the default GITHUB_TOKEN cannot trigger CI on the PR it opens): its Client ID
+# in the MOOND4RK_CI_RELEASE_APP_CLIENT_ID variable, private key in the
+# MOOND4RK_CI_RELEASE_APP_PRIVATE_KEY secret.
 #
 # crates.io Trusted Publishing must be configured for `safari-binarycookies`
 # (Repository moonD4rk/safari-binarycookies, Workflow release.yml, no
@@ -40,13 +41,25 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: ${{ secrets.RELEASE_APP_ID }}
-          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          client-id: ${{ vars.MOOND4RK_CI_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MOOND4RK_CI_RELEASE_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
+
+      - name: Resolve app bot identity
+        id: bot
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          {
+            echo "name=${APP_SLUG}[bot]"
+            echo "email=${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+          } >> "$GITHUB_OUTPUT"
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -72,8 +85,8 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           cargo update --workspace
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ steps.bot.outputs.name }}"
+          git config user.email "${{ steps.bot.outputs.email }}"
           git switch -c "release/v${VERSION}"
           git commit -am "chore: release ${VERSION}"
 
@@ -91,10 +104,13 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           git push origin "release/v${VERSION}"
+          prev=$(gh release list --limit 1 --json tagName --jq '.[0].tagName // ""')
+          notes=(--generate-notes)
+          [ -n "$prev" ] && notes+=(--notes-start-tag "$prev")
           gh release create "v${VERSION}" \
             --target "release/v${VERSION}" \
             --title "v${VERSION}" \
-            --generate-notes
+            "${notes[@]}"
 
       - name: Open PR to merge bump into main
         env:
